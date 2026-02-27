@@ -17,12 +17,12 @@ export class AuthService {
 
   usuario$ = user(this.auth);
 
-  estaAutenticado$b = this.usuario$.pipe(
+  estaAutenticado$ = this.usuario$.pipe(
     map((usuario) => !!usuario)
   );
 
   //metodo para iniciar sesion con google
-  async iniciarSesionGoogle(): Promise< Usuario | null> {
+  async iniciarSesionConGoogle(): Promise< Usuario | null> {
     try {
       const provider = new GoogleAuthProvider();
 

@@ -25,12 +25,14 @@ import { Router } from '@angular/router';
 
         try {
           //falta implementar el servicio
+          console.log('llamo a la funcion')
+          const usuario = await this.authService.iniciarSesionConGoogle()
 
-          //vamos a simular un usuario ya creado
+          /*//vamos a simular un usuario ya creado
           let usuario = null
           usuario = await new Promise ((resolve) =>{
             setTimeout(()=>resolve({nombre:'usuario de prueba'}), 1000)
-        })
+        })*/
 
         if(usuario){
           await this.router.navigate(['/chat'])
@@ -52,11 +54,16 @@ import { Router } from '@angular/router';
       this.autenticando= false
     }
   }
-  /*
-verificar que si el usuario ya es 
-  ngOninit(){
-    this.router.navigate(['/chat'])
-  }*/
+
+  ngOnInit(): void {
+    this.authService.estaAutenticado$.subscribe( autenticado => {
+      if(autenticado){
+        this.router.navigate(['/chat'])
+      }
+    })
+  }
 }
+
+
 
 
