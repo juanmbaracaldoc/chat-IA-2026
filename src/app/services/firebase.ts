@@ -1,7 +1,7 @@
 import { Injectable, inject } from "@angular/core";
-import {Firestore, Timestamp, collection, addDoc} from '@angular/fire/firestore'
-import { MensajeChat } from "../../models/chat";
-import { Observable } from "rxjs";
+import {Firestore, Timestamp, collection, addDoc, query, where, onSnapshot, DocumentData, QuerySnapshot} from '@angular/fire/firestore'
+import { ConversacionChat, MensajeChat } from "../../models/chat";
+import { Observable, map, onErrorResumeNextWith } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -9,7 +9,7 @@ import { Observable } from "rxjs";
 export class FirebaseService {
    private firestore = inject(Firestore)
   
-   // guardar mensaje
+   // guardar mensaje 
   async guardarMensaje(mensaje: MensajeChat): Promise<void> {
     try {
       // revisar si 
@@ -51,9 +51,72 @@ export class FirebaseService {
   
     }
   }
+// filtrar que los mensajes que se muestras sean del usuario que esta autenticado 
+  obtenerMensajesUsuario(usuarioId: string): Observable<MensajeChat[]> {
+    return new Observable ( observer =>{
 
-  obtenerMensajesUsuario(userId: int): Observable$ {
-    // filtrar que los mensajes que se muestras sean del usuario que esta autenticado    
+      const consulta =query(
+        collection(this.firestore, 'mensajes'),
+        where('usuarioId', "==", usuarioId)
+      )
+  const unSubscribe = onSnapshot(
+    consulta,
+    (snapshot: QuerySnapshot<DocumentData>)=>{
+        const mensajes : MensajeChat[]= snapshot.docs.map( doc =>{
+          const data = doc.data()
+          return { 
+            id: doc.id,
+            usuarioId : data ['usuarioId'],
+            contenido : data ['contenido'],
+            estado : data['estado'],
+            tipo : data['tipo'],
+            // recordamos que firebase guarda TIMESTAMP y angular en date 
+            fechaEnvio : data['fechaEnvio'].toDate()
+          } as MensajeChat;
+      });
+      //ordenar los mensajes del mas reciente al mas antiguo
+      mensajes.sort((a, b) => a.fechaEnvio.getTime() - b.fechaEnvio.getTime())
+
+      observer.next(mensajes);
+    },
+    error =>{
+      console.error('Error al escuchar los mensajes');
+      observer.error(error);
+    }
+    );
+    // se retorna una desubscripcion al servicio
+    return () =>{
+      unSubscribe;
+    }
+    });
+    // gestionar obtener el id del ususario por medio de un mensaje   
     
   }
+  
+
+  // guardar conversacion
+  async guardarConversacion(conversacion: ConversacionChat): Promise<void>{
+    try{
+      const collecionConversaciones = collection(this.firestore, 'conversaciones')
+      // preparar las conversaciones para enviarlas a firestore
+      const conversacionParaGuardar ={
+        ...conversacion,
+        fechaCreacion: Timestamp.fromDate(conversacion.fechaCreacion),
+        ultimaActividad: Timestamp.fromDate(conversacion.ultimaActividad),
+        // conversion del la fechaEnvio del MensajeChat
+        mensajes: conversacion.mensajes.map(mensaje =>({
+          ...mensaje,
+          fechaEnvio: Timestamp.fromDate(mensaje.fechaEnvio)
+        }))
+      };
+      await addDoc(collecionConversaciones, conversacionParaGuardar);
+
+    }catch(error){
+      console.error('error al guardar la conversacion', error)
+      throw error;
+    }
+  }
+
+
+
 }
