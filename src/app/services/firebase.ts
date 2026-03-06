@@ -12,6 +12,7 @@ export class FirebaseService {
    // guardar mensaje 
   async guardarMensaje(mensaje: MensajeChat): Promise<void> {
     try {
+      console.log('Guardando mensaje en Firestore:')
       // revisar si 
       if(!mensaje.usuarioId){
         //devuelvo que el mensaje debe tener un usuarioId

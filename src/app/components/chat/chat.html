@@ -3,14 +3,14 @@
 <div class="chat-container">
     <header class="chat-header">
         <div class="user-info">
-            <img src="https://gameriv.com/wp-content/uploads/2023/08/Sett-Icon.jpeg " 
+            <img src={{usuario?.photoURL}}
             alt="imagen del usuario" 
             class="user-avatar"
-            (error = "manejoErrorimagen()")
+            (error = "manejoErrorimagen($event)")
             >
             <div class="user-details">
-                <h2 class="user-name">{{nombre}}</h2>
-                <p class="user-email">{{email}}</p>
+                <h2 class="user-name">{{usuario?.displayName}}</h2>
+                <p class="user-email">{{usuario?.email}}</p>
             </div>
         
         </div>
@@ -122,6 +122,7 @@
         #mensajeInput
         [(ngModel)]="mensajeTexto"
         placeholder="Escribe tu mensaje aqui, (presiona Enter para enviar o Shitt + Enter para salto de linea)"
+        (keydown)="mensajeTeclaPresionada($event)"
         [disabled]="enviandoMensaje || asistenteEscribiendo"
         rows="1"
         ></textarea>

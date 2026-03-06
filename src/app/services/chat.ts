@@ -26,7 +26,7 @@ export class ChatService {
 
   private asistenteRespondiendo = new BehaviorSubject<boolean>(false);
 
-  private asistenteRespondiendo$ = this.asistenteRespondiendo.asObservable();
+  public asistenteRespondiendo$ = this.asistenteRespondiendo.asObservable();
 
   async InicializarChat(usuarioId: string): Promise <void>{
     if(!this.cargandoHistorial){
