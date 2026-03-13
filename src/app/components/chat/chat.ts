@@ -127,7 +127,7 @@ try{
 
 
   manejoErrorimagen(event: any): void{
-    event.target.src = 'assets/usuario-placeholder.png'
+    event.target.src = 'https://www.reddit.com/r/settmains/comments/15s5n79/new_sett_icon/?tl=es-es'
   }
 
 
