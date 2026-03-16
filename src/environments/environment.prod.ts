@@ -11,8 +11,8 @@ export const environment ={
     },
         
         gemini:{
-        apiURL:"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
-        apiKey:"AIzaSyAOa2AFOmuPaMjDwtQwOHltSMbz4ye-0pk"
+        apiURL:"https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent",
+        apiKey:"AIzaSyAsuxKeOwt1sEpIOnWYA_wubAUUTBcpeC4"
     }
 }
 
