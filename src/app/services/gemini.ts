@@ -75,7 +75,7 @@ export class GeminiService {
     const cuerpoPeticon: any = {
       contents: contents,
       generationConfig: {
-        maxOutputTokens: 2048,
+        maxOutputTokens: 8000,
         temperature: 0.5
       }
     };
